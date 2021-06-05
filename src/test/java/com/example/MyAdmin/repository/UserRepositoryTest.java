@@ -19,65 +19,55 @@ public class UserRepositoryTest {
 
     @Test
     public void create(){
+        String account="Test01";
+        String password= "Test01";
+        String status = "REGISTERED";
+        String email = "test01@gmail.com";
+        String phoneNumber ="010-1234-1234";
+        LocalDateTime registeredAt = LocalDateTime.now();
+        LocalDateTime createdAt = LocalDateTime.now();
+        String createdBy = "Admin";
+
         User user = new User();
-        user.setAccount("test05");
-        user.setEmail("test05@gmail.com");
-        user.setPhoneNumber("010-2345-1234");
-        user.setCreatedAt(LocalDateTime.now());
-        user.setCreatedBy("admin");
+        user.setAccount(account);
+        user.setEmail(email);
+        user.setStatus(status);
+        user.setPhoneNumber(phoneNumber);
+        user.setPassword(password);
+        user.setRegisteredAt(registeredAt);
+        user.setCreatedAt(createdAt);
+        user.setCreatedBy(createdBy);
 
         User newUser = userRepository.save(user);
 
-    }
+        Assert.assertNotNull(newUser);
 
-    @Test
-    public void read(){
-        Optional<User> user = userRepository.findById(1L); //제네릭 타입
-
-        user.ifPresent(selectUser -> {
-            System.out.println("user: " + selectUser);
-        });
-    }
-
-    @Test
-    public void update(){
-        Optional<User> user = userRepository.findById(2L);
-        user.ifPresent(selectUser -> {
-            selectUser.setAccount("test002");
-            selectUser.setUpdateAt(LocalDateTime.now());
-            selectUser.setUpdatedBy("admin");
-
-            userRepository.save(selectUser);
-        });
-    }
-
-    @Test
-    @Transactional  // delete해도 rollback해준다.
-    public void delete(){
-        Optional<User> user = userRepository.findById(3L);
-        Assert.assertTrue(user.isPresent());
-
-        user.ifPresent(selectUser -> {
-            userRepository.delete(selectUser);
-        });
-
-        Optional<User> dUser = userRepository.findById(3L);
-
-        Assert.assertFalse(dUser.isPresent());
 
     }
 
     @Test
     @Transactional
-    public void readUser(){
-        //Optional<User> user = userRepository.findById(3L);
-        Optional<User> user = userRepository.findByAccount("test01");
+    public void read(){
+        User user = userRepository.findFirstByPhoneNumberOrderByIdDesc("010-1234-2345");
 
-        user.ifPresent( selectUser -> {
-            selectUser.getOrderDetailList().stream().forEach( detail -> {
-                Item item =  detail.getItem();
-                System.out.println(item);
+        user.getOrderGroupList().stream().forEach(orderGroup -> {
+            System.out.println("----------------주문묶음-----------------");
+            System.out.println(orderGroup.getTotalPrice());
+            System.out.println(orderGroup.getRevAddress());
+            System.out.println(orderGroup.getRevName());
+
+            System.out.println("-----------------주문상세----------------");
+
+            orderGroup.getOrderDetailList().forEach(orderDetail -> {
+                System.out.println("파트너사: "+ orderDetail.getItem().getPartner().getName());
+                System.out.println("카테고리:" + orderDetail.getItem().getPartner().getCategory().getTitle());
+                System.out.println("주문상품: " + orderDetail.getItem().getName());
+                System.out.println("고객센터번호: "+ orderDetail.getItem().getPartner().getCallCenter());
+                System.out.println("주문상태: "+orderDetail.getStatus());
+                System.out.println("도착예정일자: "+ orderDetail.getArrivedDate());
+
             });
+
         });
 
     }
