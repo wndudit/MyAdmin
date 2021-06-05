@@ -14,27 +14,29 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor // 모든 매개변수가 들어가는 생성자를 만들어주자.
-@NoArgsConstructor // 기본 생성자 만들어준다.  public User () {}  매개변수 없음.
-@Data //객체를 가질 거임
 @Entity
-@ToString(exclude = {"orderGroupList"})
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(exclude = {"itemList","category"})
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class Partner {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String account;
-    private String password;
+    private String name;
     private String status;
-    private String email;
-    private String phoneNumber;
+    private String address;
+    private String callCenter;
+    private String partnerNumber;
+    private String businessNumber;
+    private String ceoName;
     private LocalDateTime registeredAt;
     private LocalDateTime unregisteredAt;
     /*private LocalDateTime createdAt;
     private String createdBy;
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
     private String updatedBy;*/
     @CreatedDate
     private LocalDateTime createdAt;
@@ -45,11 +47,12 @@ public class User {
     @LastModifiedBy
     private String updatedBy;
 
-    // User : OrderGroup => 1 : N
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
-    private List<OrderGroup> orderGroupList;
 
+    // Partner : Category =   N : 1 하나의 카테고리 여러 파트너사가 있다.
+    @ManyToOne
+    private Category category;
 
-
-
+    //Partner : Item = 1 :N
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "partner")
+    private List<Item> itemList;
 }

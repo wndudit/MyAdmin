@@ -11,30 +11,33 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@AllArgsConstructor // 모든 매개변수가 들어가는 생성자를 만들어주자.
-@NoArgsConstructor // 기본 생성자 만들어준다.  public User () {}  매개변수 없음.
-@Data //객체를 가질 거임
 @Entity
-@ToString(exclude = {"orderGroupList"})
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString(exclude = {"user","orderDetailList"})
 @EntityListeners(AuditingEntityListener.class)
-public class User {
+public class OrderGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String account;
-    private String password;
     private String status;
-    private String email;
-    private String phoneNumber;
-    private LocalDateTime registeredAt;
-    private LocalDateTime unregisteredAt;
+    private String orderType;
+    private String revAddress;
+    private String revName;
+    private String paymentType;
+    private BigDecimal totalPrice;
+    private Integer totalQuantity;
+    private LocalDateTime orderAt;
+    private LocalDateTime arrivalDate;
     /*private LocalDateTime createdAt;
     private String createdBy;
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
     private String updatedBy;*/
     @CreatedDate
     private LocalDateTime createdAt;
@@ -45,9 +48,13 @@ public class User {
     @LastModifiedBy
     private String updatedBy;
 
-    // User : OrderGroup => 1 : N
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
-    private List<OrderGroup> orderGroupList;
+    @ManyToOne
+    //private Long userId;
+    private User user; //이제 객체로 받는다. , mappedBy와 동일해야함.
+
+    // OrderGroup : OrderDetail = 1 : N
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "orderGroup")
+    private List<OrderDetail> orderDetailList;
 
 
 
