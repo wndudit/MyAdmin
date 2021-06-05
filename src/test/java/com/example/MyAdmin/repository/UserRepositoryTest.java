@@ -19,8 +19,8 @@ public class UserRepositoryTest {
 
     @Test
     public void create(){
-        String account="Test01";
-        String password= "Test01";
+        String account="Test14";
+        String password= "Test14";
         String status = "REGISTERED";
         String email = "test01@gmail.com";
         String phoneNumber ="010-1234-1234";
@@ -35,8 +35,8 @@ public class UserRepositoryTest {
         user.setPhoneNumber(phoneNumber);
         user.setPassword(password);
         user.setRegisteredAt(registeredAt);
-        user.setCreatedAt(createdAt);
-        user.setCreatedBy(createdBy);
+        /*user.setCreatedAt(createdAt);
+        user.setCreatedBy(createdBy);*/
 
         User newUser = userRepository.save(user);
 
